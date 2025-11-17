@@ -26,7 +26,7 @@ const agentTaglines: Record<AgentId, string> = {
   nutrition:
     "Higher protein, lighter/heavier options, more balanced plates – no medical advice.",
   planner:
-    "Batching, leftovers and turning Giuseppe’s dishes into simple plans for a few days.",
+    "Batching, leftovers and turning these dishes into simple plans for a few days.",
 };
 
 export type AIChatProps = {
@@ -52,7 +52,7 @@ export function AIChat({
       id: "welcome",
       author: "ai",
       text:
-        "I’ll keep it simple. Ask about swaps, time, scaling or nutrition and I’ll adapt Giuseppe’s recipes around you.",
+        "I’ll keep it simple. Ask about swaps, time, scaling or nutrition and I’ll adapt the recipes around you.",
       animate: true,
     },
   ]);

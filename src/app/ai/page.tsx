@@ -27,7 +27,7 @@ const agentTaglines: Record<AgentId, string> = {
   nutrition:
     "Higher protein, lighter/heavier options, more balanced plates – no medical advice.",
   planner:
-    "Batching, leftovers and turning Giuseppe’s dishes into simple plans for a few days.",
+    "Batching, leftovers and turning these dishes into simple plans for a few days.",
 };
 
 export default function AiKitchenPage() {
@@ -43,7 +43,7 @@ export default function AiKitchenPage() {
       id: "welcome",
       author: "ai",
       text:
-        "## AI kitchen\n\nI’ll keep it simple and to the point. Ask about swaps, time, or scaling and I’ll adapt Giuseppe’s recipes around you.\n\nWhat are you cooking or stuck on?",
+        "## AI kitchen\n\nI’ll keep it simple and to the point. Ask about swaps, time, or scaling and I’ll adapt the recipes around you.\n\nWhat are you cooking or stuck on?",
       animate: true,
     },
   ]);
@@ -149,7 +149,7 @@ export default function AiKitchenPage() {
                 AI kitchen helper
               </h1>
               <p className="text-sm md:text-base text-slate-600 max-w-xl">
-                Ask me how to use Giuseppe’s recipes in real life – missing
+                Ask me how to use these recipes in real life – missing
                 ingredients, swaps, lighter or heavier versions, scaling for
                 guests, or planning a few meals ahead.
               </p>
@@ -276,7 +276,7 @@ export default function AiKitchenPage() {
               <div className="space-y-1">
                 <p className="text-sm font-medium">{selectedRecipe.title}</p>
                 <p className="text-xs text-slate-500">
-                  From Giuseppe&apos;s socials. The AI will try to keep you as
+                  From social video. The AI will try to keep you as
                   close to this recipe as possible while adapting around you.
                 </p>
               </div>
@@ -329,7 +329,7 @@ export default function AiKitchenPage() {
             ))}
           </div>
           <p className="text-[10px] text-slate-400 pt-1">
-            The AI knows Giuseppe&apos;s recipes and general cooking knowledge,
+            The AI knows these recipes and general cooking knowledge,
             not your medical history.
           </p>
         </div>
