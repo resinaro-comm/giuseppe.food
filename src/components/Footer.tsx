@@ -5,7 +5,7 @@ export function Footer() {
 
   return (
     <footer className="mt-auto border-t border-slate-200 bg-white/80 backdrop-blur">
-      <div className="container-base py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs md:text-sm text-slate-600">
+      <div className="container-base w-full py-8 flex flex-col md:flex-row items-center md:items-center justify-center md:justify-between gap-6 text-xs md:text-sm text-slate-600 text-center md:text-left">
         {/* Brand + tagline */}
         <div className="space-y-1">
           <p className="font-medium text-slate-800">
@@ -17,7 +17,7 @@ export function Footer() {
         {/* Links + contact + socials */}
         <div className="flex flex-col md:items-end gap-2">
           {/* Quick nav */}
-          <div className="flex flex-wrap gap-3 md:justify-end">
+          <div className="flex flex-wrap gap-3 justify-center md:justify-end">
             <Link href="/" className="hover:text-slate-900">
               Home
             </Link>
@@ -43,7 +43,7 @@ export function Footer() {
           </p>
 
           {/* Socials */}
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex items-center justify-center md:justify-end gap-2 pt-1">
             <a
               href="https://www.instagram.com/ggg002g"
               target="_blank"

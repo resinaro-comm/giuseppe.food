@@ -36,7 +36,7 @@ export default function RecipePage({ params }: RecipePageProps) {
           <p className="text-sm md:text-base text-slate-600 max-w-2xl">
             {recipe.shortDescription}
           </p>
-          <div className="flex flex-wrap gap-2 text-[11px]">
+          <div className="flex flex-wrap gap-2 justify-center md:justify-center text-[11px]">
             {recipe.timeMinutes && (
               <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-600">
                 {recipe.timeMinutes} min

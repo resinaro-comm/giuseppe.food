@@ -19,7 +19,7 @@ export function RecipeVideoPlayer({ videoUrl, instagramUrl, poster }: RecipeVide
         <video
           controls
           playsInline
-          preload="metadata"
+          preload="auto"
           poster={poster}
           className="w-full h-full object-cover object-center"
         >
