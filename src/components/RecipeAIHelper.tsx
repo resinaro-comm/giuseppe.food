@@ -42,7 +42,7 @@ export function RecipeAIHelper({ slug, recipeTitle }: Props) {
         <div className="space-y-1">
           <h2 className="text-lg font-semibold">Ask the AI about this</h2>
           <p className="text-xs text-slate-300">
-            Tell it what you forgot to buy, what you don't like, or how much time you actually have. The AI only knows my recipes and will try to adapt this one around you.
+            Tell it what you forgot to buy, what you don&apos;t like, or how much time you actually have. The AI only knows my recipes and will try to adapt this one around you.
           </p>
         </div>
 
