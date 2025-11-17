@@ -283,7 +283,7 @@ export const recipes: Recipe[] = [
     title: "Beef Braciole",
     thumbnail: "/images/beef-braciole.jpg",
     shortDescription:
-      "Rich, cheesy beef braciole simmered in tomato sauce – perfect for date night.",
+      "Rich, cheesy beef braciole simmered in tomato sauce.",
     timeMinutes: 90,
     tags: ["beef", "slow", "date-night"],
     instagramUrl: "https://www.instagram.com/reel/DRHY2XmgvqO/",
