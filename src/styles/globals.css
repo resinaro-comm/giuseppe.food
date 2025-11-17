@@ -1,0 +1,51 @@
+/* stylelint-disable-next-line at-rule-no-unknown */
+@tailwind base;
+/* stylelint-disable-next-line at-rule-no-unknown */
+@tailwind components;
+/* stylelint-disable-next-line at-rule-no-unknown */
+@tailwind utilities;
+
+/* Design tokens */
+:root {
+  --background: #f8fafc; /* slate-50 */
+  --foreground: #0f172a; /* slate-900 */
+}
+
+/* Reset-ish */
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+/* Base styles */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Ubuntu, Cantarell, "Noto Sans", sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Tailwind utility-style classes need to live inside a layer */
+@layer utilities {
+  .container-base {
+    @apply max-w-6xl mx-auto px-4 text-center md:text-left;
+  }
+
+  .section-spacing {
+    @apply py-16 md:py-24;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 18s linear infinite;
+  }
+}
