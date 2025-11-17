@@ -11,7 +11,7 @@ export function Footer() {
           <p className="font-medium text-slate-800">
             © {year} giuseppe.food
           </p>
-          <p>Recipes &amp; AI kitchen helper by Giuseppe.</p>
+          <p>Recipes &amp; AI kitchen helper.</p>
         </div>
 
         {/* Links + contact + socials */}

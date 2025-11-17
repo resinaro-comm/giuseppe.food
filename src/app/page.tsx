@@ -30,7 +30,7 @@ export default function HomePage() {
           <p className="text-slate-600 text-sm md:text-base max-w-xl mx-auto md:mx-0">
             Every dish from my Instagram, TikTok and YouTube lives here with
             proper ingredients and steps — plus an AI kitchen helper that
-            adapts my recipes to what you&apos;ve actually got at home.
+            adapts recipes to what you&apos;ve actually got at home. (it doesn&apos;t judge you)
           </p>
           <div className="flex flex-wrap gap-3 justify-center md:justify-start">
             <Link
@@ -47,7 +47,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="text-xs text-slate-500">
-            Built by Giuseppe. Recipes are added from my latest videos as they
+            Recipes are added from my latest videos as they
             go live.
           </p>
         </div>
