@@ -1,15 +1,33 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useSearchParams } from "next/navigation";
 import { recipes } from "../../data/recipes";
 
 type Author = "user" | "ai";
+type AgentId = "chef" | "nutrition" | "planner";
 
 type ChatMessage = {
   id: string;
   author: Author;
   text: string;
+  animate?: boolean;
+};
+
+const agentLabels: Record<AgentId, string> = {
+  chef: "Chef",
+  nutrition: "Nutrition",
+  planner: "Meal planner",
+};
+
+const agentTaglines: Record<AgentId, string> = {
+  chef: "Flavour, technique & swaps that still taste like the original cuisine.",
+  nutrition:
+    "Higher protein, lighter/heavier options, more balanced plates – no medical advice.",
+  planner:
+    "Batching, leftovers and turning Giuseppe’s dishes into simple plans for a few days.",
 };
 
 export default function AiKitchenPage() {
@@ -19,12 +37,14 @@ export default function AiKitchenPage() {
 
   const [input, setInput] = useState(initialQuestion);
   const [isSending, setIsSending] = useState(false);
+  const [agent, setAgent] = useState<AgentId>("chef");
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "welcome",
       author: "ai",
       text:
-        "Hey, I’m Giuseppe’s AI kitchen helper. Ask me how to adapt his recipes to what you’ve actually got: missing ingredients, swaps, lighter versions, extra portions, all that.",
+        "## AI kitchen\n\nI’ll keep it simple and to the point. Ask about swaps, time, or scaling and I’ll adapt Giuseppe’s recipes around you.\n\nWhat are you cooking or stuck on?",
+      animate: true,
     },
   ]);
 
@@ -43,6 +63,18 @@ export default function AiKitchenPage() {
     setInput(prompt);
   };
 
+  const handleClear = () => {
+    setMessages([
+      {
+        id: "welcome",
+        author: "ai",
+        text:
+          "New chat. Keep it simple. What are you making, or what’s missing?",
+        animate: true,
+      },
+    ]);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = input.trim();
@@ -59,39 +91,38 @@ export default function AiKitchenPage() {
     setIsSending(true);
 
     try {
-      // Placeholder API call – you’ll implement /api/kitchen-ai separately.
       const res = await fetch("/api/kitchen-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: trimmed,
           recipeSlug: selectedRecipe?.slug ?? null,
+          agent, // this lets the API know which "mode" to use
         }),
       });
 
-      let aiText =
-        "I’m still being wired up behind the scenes – this is a placeholder response. Soon I’ll adapt Giuseppe’s recipes around your ingredients, time and preferences.";
-
-      if (res.ok) {
-        const data = await res.json().catch(() => null);
-        if (data?.reply && typeof data.reply === "string") {
-          aiText = data.reply;
-        }
-      }
+      const data = res.ok ? await res.json().catch(() => null) : null;
 
       const aiMessage: ChatMessage = {
         id: `ai-${Date.now()}`,
         author: "ai",
-        text: aiText,
+        text:
+          data?.reply && typeof data.reply === "string"
+            ? data.reply
+            : res.ok
+            ? "I couldn't generate a proper answer. Try again."
+            : "The AI service returned an error. Please retry in a moment.",
+        animate: true,
       };
 
       setMessages((prev) => [...prev, aiMessage]);
-    } catch (err) {
+    } catch {
       const aiMessage: ChatMessage = {
         id: `ai-error-${Date.now()}`,
         author: "ai",
         text:
-          "Something went wrong sending that to the AI. Check your connection and try again, or ask again in a second.",
+          "Network or server error. Check your connection / API key and try again shortly.",
+        animate: true,
       };
       setMessages((prev) => [...prev, aiMessage]);
     } finally {
@@ -111,14 +142,57 @@ export default function AiKitchenPage() {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start">
       {/* Left: chat */}
       <section className="space-y-4">
-        <header className="space-y-2">
-          <h1 className="text-2xl md:text-3xl font-semibold">
-            AI kitchen helper
-          </h1>
-          <p className="text-sm md:text-base text-slate-600 max-w-xl">
-            Ask me how to use Giuseppe’s recipes in real life – missing
-            ingredients, swaps, making it lighter or heavier, scaling up for
-            guests, or building a simple plan around what you’ve got.
+        <header className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="space-y-1">
+              <h1 className="text-2xl md:text-3xl font-semibold">
+                AI kitchen helper
+              </h1>
+              <p className="text-sm md:text-base text-slate-600 max-w-xl">
+                Ask me how to use Giuseppe’s recipes in real life – missing
+                ingredients, swaps, lighter or heavier versions, scaling for
+                guests, or planning a few meals ahead.
+              </p>
+            </div>
+          </div>
+
+          {/* Agent toggle */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1 text-xs">
+              {(
+                [
+                  ["chef", "Chef"],
+                  ["nutrition", "Nutrition"],
+                  ["planner", "Meal planner"],
+                ] as [AgentId, string][]
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setAgent(id)}
+                  className={`px-3 py-1 rounded-full transition ${
+                    agent === id
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleClear}
+              className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2"
+            >
+              Clear chat
+            </button>
+          </div>
+
+          <p className="text-[11px] text-slate-500 max-w-xl">
+            <span className="font-medium">{agentLabels[agent]} mode:</span>{" "}
+            {agentTaglines[agent]}
           </p>
         </header>
 
@@ -139,7 +213,11 @@ export default function AiKitchenPage() {
                       : "max-w-[76%] rounded-2xl rounded-bl-sm bg-slate-100 text-slate-900 px-4 py-2.5 text-sm"
                   }
                 >
-                  {msg.text}
+                    {msg.author === "ai" ? (
+                      <TypewriterMarkdown text={msg.text} animate={msg.animate} />
+                    ) : (
+                      msg.text
+                    )}
                 </div>
               </div>
             ))}
@@ -154,7 +232,10 @@ export default function AiKitchenPage() {
           </div>
 
           {/* Input */}
-          <form onSubmit={handleSubmit} className="border-t border-slate-200 p-3">
+          <form
+            onSubmit={handleSubmit}
+            className="border-t border-slate-200 p-3"
+          >
             <div className="flex items-end gap-2">
               <textarea
                 value={input}
@@ -164,7 +245,7 @@ export default function AiKitchenPage() {
                 placeholder={
                   selectedRecipe
                     ? `Ask about ${selectedRecipe.title}…`
-                    : "Ask anything about Giuseppe’s recipes…"
+                    : "Ask the AI kitchen assistant anything…"
                 }
               />
               <button
@@ -176,8 +257,8 @@ export default function AiKitchenPage() {
               </button>
             </div>
             <p className="mt-1 text-[10px] text-slate-500">
-              This is general cooking guidance, not medical or clinical nutrition
-              advice.
+              General cooking &amp; nutrition guidance only – not medical or
+              clinical advice.
             </p>
           </form>
         </div>
@@ -223,7 +304,7 @@ export default function AiKitchenPage() {
             <p className="text-xs text-slate-600">
               No specific recipe selected. You can still ask general questions
               like &quot;I&apos;ve only got chicken thighs, pasta and tinned
-              tomatoes, 25 minutes, what can I make from your recipes?&quot;
+              tomatoes, 25 minutes – what can I make from your recipes?&quot;
             </p>
           )}
         </div>
@@ -248,11 +329,39 @@ export default function AiKitchenPage() {
             ))}
           </div>
           <p className="text-[10px] text-slate-400 pt-1">
-            The AI only has access to Giuseppe&apos;s recipes, not the whole
-            internet.
+            The AI knows Giuseppe&apos;s recipes and general cooking knowledge,
+            not your medical history.
           </p>
         </div>
       </aside>
+    </div>
+  );
+}
+
+function TypewriterMarkdown({
+  text,
+  animate,
+}: {
+  text: string;
+  animate?: boolean;
+}) {
+  const [display, setDisplay] = useState(animate ? "" : text);
+
+  useEffect(() => {
+    if (!animate) return;
+    let i = 0;
+    const cps = 1; // slightly slower, calm vibe
+    const interval = setInterval(() => {
+      i += cps;
+      setDisplay(text.slice(0, i));
+      if (i >= text.length) clearInterval(interval);
+    }, 16);
+    return () => clearInterval(interval);
+  }, [text, animate]);
+
+  return (
+    <div className="ai-md">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{display}</ReactMarkdown>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { recipes } from "../../../data/recipes";
 import { InstagramEmbed } from "@components/InstagramEmbed";
 import { RecipeVideoPlayer } from "@components/RecipeVideoPlayer";
+import { RecipeAIHelper } from "@components/RecipeAIHelper";
 
 type RecipePageProps = {
   params: { slug: string };
@@ -99,7 +100,7 @@ export default function RecipePage({ params }: RecipePageProps) {
           </div>
         </div>
 
-        {/* Right column – ingredients + AI helper */}
+    {/* Right column – ingredients + AI helper */}
         <div className="space-y-8">
           {/* Ingredients */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-3">
@@ -114,50 +115,8 @@ export default function RecipePage({ params }: RecipePageProps) {
             </ul>
           </div>
 
-          {/* AI helper box (UI only for now) */}
-          <div className="rounded-2xl border border-slate-900/10 bg-slate-900 text-slate-50 p-5 space-y-4">
-            <div className="space-y-1">
-              <h2 className="text-lg font-semibold">Ask the AI about this</h2>
-              <p className="text-xs text-slate-300">
-                Tell it what you forgot to buy, what you don&apos;t like, or how
-                much time you actually have. The AI only knows my recipes and
-                will try to adapt this one around you.
-              </p>
-            </div>
-
-            {/* Simple form that sends the question to /ai as a query param */}
-            <form action="/ai" method="GET" className="space-y-3">
-              <input type="hidden" name="recipe" value={recipe.slug} />
-              <textarea
-                name="q"
-                rows={3}
-                className="w-full rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm text-slate-50 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500"
-                placeholder='e.g. "I forgot to buy garlic, what can I do?"'
-              />
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-medium text-slate-900 hover:bg-slate-100 transition"
-              >
-                Ask the AI
-              </button>
-            </form>
-
-            <div className="space-y-1.5">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
-                Quick ideas
-              </p>
-              <ul className="space-y-1 text-xs text-slate-200">
-                <li>• “I forgot to buy _____, what can I swap it for?”</li>
-                <li>• “I don&apos;t like mushrooms, how can I change this?”</li>
-                <li>• “Make this lighter but still filling.”</li>
-                <li>• “Adapt this to serve 5 people instead of 2.”</li>
-              </ul>
-              <p className="text-[10px] text-slate-400 pt-1">
-                The AI is for general cooking guidance only, not medical or
-                clinical nutrition advice.
-              </p>
-            </div>
-          </div>
+          {/* AI helper + inline chat */}
+          <RecipeAIHelper slug={recipe.slug} recipeTitle={recipe.title} />
         </div>
       </section>
     </article>
