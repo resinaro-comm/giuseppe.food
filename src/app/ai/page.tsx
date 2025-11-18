@@ -148,14 +148,49 @@ export default function AiKitchenPage() {
     }
   };
 
-  const quickPrompts = [
-    "I forgot to buy garlic, what can I do instead?",
-    "I don't like mushrooms, how can I change this recipe?",
-    "Make this lighter but still filling.",
-    "Adapt this to serve 5 people instead of 2.",
-    "I only have 20 minutes – what’s the closest recipe to this that I can make?",
-  ];
+  // Build dynamic quick prompts (swap, scale, time, flavor, leftovers)
+  const quickPrompts = useMemo(() => {
+    const generic = [
+      "Only chicken thighs, pasta, tinned tomatoes & 20 min – what can I make?",
+      "No oven today – which recipe adapts well to stove only?",
+      "Scale a dish for 6 without wrecking seasoning?",
+      "Turn leftovers into a next-day pasta or wrap?",
+      "Make a lighter version that still tastes proper?",
+    ];
+    if (!selectedRecipe) return generic.slice(0, 5);
+    const ing = (selectedRecipe.ingredients || [])
+      .map((i) => i.toLowerCase())
+      .filter(
+        (i) =>
+          !/salt|pepper|water|oil|olive|butter|season|spice|herb|sugar|flour|egg|baking|powder|fresh/i.test(
+            i
+          )
+      );
+    const uniqIng = Array.from(new Set(ing)).slice(0, 6);
+    const base: string[] = [];
+    if (uniqIng[0]) base.push(`No ${uniqIng[0]} – swap that keeps flavour?`);
+    if (uniqIng[1]) base.push(`Can't find ${uniqIng[1]} – closest alternative?`);
+    base.push("Make this lighter but still satisfying.");
+    base.push("Serve 5 instead of 2 – scaling + pan size?");
+    if (selectedRecipe.timeMinutes) {
+      const t = selectedRecipe.timeMinutes;
+      const crunch = t <= 25 ? Math.max(12, Math.round(t * 0.6)) : 20;
+      base.push(`Only ${crunch} min – shortcut steps?`);
+    } else {
+      base.push("Only 20 min – fastest similar recipe?");
+    }
+    base.push("Leftovers ideas / next meal?");
+    // Shuffle lightly for variation
+    const shuffled = [...base].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 6);
+  }, [selectedRecipe]);
 
+  const [qpSet, setQpSet] = useState<string[]>(quickPrompts);
+  useEffect(() => setQpSet(quickPrompts), [quickPrompts]);
+  const refreshQuickPrompts = () => {
+    // Force rebuild by randomizing order again
+    setQpSet((prev) => [...prev].sort(() => Math.random() - 0.5));
+  };
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start">
       {showGate && (
@@ -333,28 +368,42 @@ export default function AiKitchenPage() {
           )}
         </div>
 
-        {/* Quick prompts */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-900 text-slate-50 p-5 space-y-3">
-          <h2 className="text-sm font-semibold">Quick ideas</h2>
-          <p className="text-xs text-slate-300">
-            Tap one to drop it into the chat box, then tweak it to match what
-            you&apos;ve got.
-          </p>
-          <div className="flex flex-col gap-2">
-            {quickPrompts.map((qp) => (
+        {/* Quick prompts (upgraded) */}
+        <div className="rounded-2xl border border-slate-200 bg-slate-900 text-slate-50 p-5 space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <h2 className="text-sm font-semibold">Quick ideas</h2>
+              <p className="text-[11px] text-slate-300 leading-relaxed max-w-xs">
+                Substitutions, speed, scaling, leftovers. Tap to drop it in – then tweak it to match what you actually have.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={refreshQuickPrompts}
+              className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-800/60 h-8 w-8 text-[11px] hover:bg-slate-700 transition"
+              aria-label="Shuffle suggestions"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M4 4h5l2 3-2 3H4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M20 4h-5l-2 3 2 3h5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M4 20h5l8-12h5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+          <div className="grid gap-2">
+            {qpSet.map((qp) => (
               <button
                 key={qp}
                 type="button"
                 onClick={() => handleQuickPrompt(qp)}
-                className="text-left text-xs rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 hover:bg-slate-800 transition"
+                className="group relative text-left rounded-xl border border-slate-700/60 bg-slate-800/50 px-3 py-2.5 text-[11.5px] leading-snug hover:border-slate-600 hover:bg-slate-800 transition shadow-sm"
               >
-                {qp}
+                <span className="block pr-4 text-slate-200 group-hover:text-white">{qp}</span>
               </button>
             ))}
           </div>
           <p className="text-[10px] text-slate-400 pt-1">
-            The AI knows these recipes and general cooking knowledge,
-            not your medical history.
+            General cooking knowledge only – not medical advice.
           </p>
         </div>
       </aside>
