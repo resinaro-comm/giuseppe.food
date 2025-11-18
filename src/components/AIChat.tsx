@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { recipes } from "../data/recipes";
+import { SignupGate } from "@components/SignupGate";
 
 type Author = "user" | "ai";
 type AgentId = "chef" | "nutrition" | "planner";
@@ -56,6 +57,7 @@ export function AIChat({
       animate: true,
     },
   ]);
+  const [showGate, setShowGate] = useState(false);
 
   const startedRef = useRef(false);
 
@@ -120,6 +122,11 @@ export function AIChat({
       author: "user",
       text: trimmed,
     };
+    // Capture history to now (before appending the new message)
+    const history = messages.map((m) => ({
+      role: m.author === "user" ? "user" : "assistant",
+      content: m.text,
+    }));
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsSending(true);
@@ -132,10 +139,19 @@ export function AIChat({
           message: trimmed,
           recipeSlug: selectedRecipe?.slug ?? null,
           agent,
+          history,
         }),
       });
 
-      const data = res.ok ? await res.json().catch(() => null) : null;
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        if (res.status === 429 && (data?.requireSignup || data?.error === "signup_required")) {
+          setShowGate(true);
+          setIsSending(false);
+          return;
+        }
+        throw new Error(data?.error || "The AI service returned an error. Please retry in a moment.");
+      }
 
       const aiMessage: ChatMessage = {
         id: `ai-${Date.now()}`,
@@ -182,6 +198,9 @@ export function AIChat({
 
   return (
     <section className={className}>
+      {showGate && (
+        <SignupGate open={showGate} onClose={() => setShowGate(false)} onVerified={() => setShowGate(false)} />
+      )}
       {/* Agent toggle */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1 text-xs">
@@ -260,24 +279,24 @@ export function AIChat({
 
         {/* Input */}
         <form onSubmit={handleSubmit} className="border-t border-slate-200 p-3">
-          <div className="flex items-end gap-2">
+          <div className="flex items-center gap-2">
             <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              rows={2}
-              className="flex-1 resize-none rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500"
-              placeholder={
-                selectedRecipe
-                  ? `Ask about ${selectedRecipe.title}…`
-                  : "Ask the AI kitchen assistant anything…"
-              }
+              onChange={(e) => {
+                setInput(e.target.value);
+                const el = e.target; el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,160)+'px';
+              }}
+              rows={1}
+              className="flex-1 resize-none rounded-full border border-slate-300 bg-slate-50 px-3 py-[10px] text-sm text-slate-900 placeholder:text-slate-400 leading-snug focus:outline-none focus:ring-2 focus:ring-slate-500 h-[42px]"
+              placeholder={ selectedRecipe ? `Ask about ${selectedRecipe.title}…` : "Ask the AI anything…" }
+              style={{height:'42px', overflow:'hidden'}}
             />
             <button
               type="submit"
-              disabled={isSending}
-              className="inline-flex items-center justify-center rounded-full px-4 py-2 text-xs font-medium text-white bg-slate-900 disabled:bg-slate-400 disabled:cursor-not-allowed hover:bg-slate-800 transition"
+              disabled={isSending || !input.trim()}
+              className="inline-flex items-center justify-center rounded-full px-5 h-[42px] text-xs font-medium text-white bg-slate-900 disabled:bg-slate-400 disabled:cursor-not-allowed hover:bg-slate-800 transition"
             >
-              {isSending ? "Sending…" : "Send"}
+              {isSending ? "…" : "Send"}
             </button>
           </div>
           <p className="mt-1 text-[10px] text-slate-500">
@@ -320,7 +339,7 @@ function TypewriterMarkdown({
     return out;
   };
 
-  const prepared = useMemo(() => stylizeText(text), [text, JSON.stringify(keywords)]);
+  const prepared = useMemo(() => stylizeText(text), [text, stylizeText, JSON.stringify(keywords)]);
   const [display, setDisplay] = useState(animate ? "" : prepared);
 
   useEffect(() => {

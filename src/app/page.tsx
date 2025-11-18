@@ -25,12 +25,10 @@ export default function HomePage() {
           <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
             Short videos,
             <br className="hidden md:block" />
-            {" "}full recipes & an AI that actually helps you cook.
+            {" "}full recipes.
           </h1>
           <p className="text-slate-600 text-sm md:text-base max-w-xl mx-auto md:mx-0">
-            Every dish from my Instagram, TikTok and YouTube lives here with
-            proper ingredients and steps — plus an AI kitchen helper that
-            adapts recipes to what you&apos;ve actually got at home. (it doesn&apos;t judge you)
+            Every dish from my socials with proper ingredients and steps.
           </p>
           <div className="flex flex-wrap gap-3 justify-center md:justify-start">
             <Link
@@ -81,7 +79,7 @@ export default function HomePage() {
             </div>
 
             <div className="p-4 md:p-5 space-y-3 border-t border-slate-100">
-              <div className="flex flex-wrap gap-2 text-[11px] text-slate-600">
+              <div className="flex flex-wrap gap-2 text-[11px] text-slate-600 justify-center md:justify-start">
                 {heroRecipe.timeMinutes && (
                   <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 font-medium">
                     {heroRecipe.timeMinutes} min

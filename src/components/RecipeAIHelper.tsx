@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AIChat } from "@components/AIChat";
+import { recipes } from "@components/../data/recipes";
 
 type Props = {
   slug: string;
@@ -14,12 +15,31 @@ export function RecipeAIHelper({ slug, recipeTitle }: Props) {
   const [initialQ, setInitialQ] = useState<string | undefined>(undefined);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  const quickPrompts = [
-    "I forgot to buy garlic, what can I do instead?",
-    "I don't like mushrooms, how can I change this recipe?",
-    "Make this lighter but still filling.",
-    "Adapt this to serve 5 people instead of 2.",
-  ];
+  // Look up the full recipe to tailor prompts
+  const recipe = useMemo(() => recipes.find((r) => r.slug === slug), [slug]);
+  const keyIngredients = useMemo(() => {
+    const src = (recipe?.ingredients ?? [])
+      .map((i) => i.toLowerCase())
+      .filter((i) => !/salt|pepper|water|oil|olive|butter|herb|spice|season|sugar|flour|egg/i.test(i));
+    return Array.from(new Set(src)).slice(0, 4);
+  }, [recipe]);
+
+  const quickPrompts = useMemo(() => {
+    const t = recipeTitle;
+    const ingA = keyIngredients[0];
+    const ingB = keyIngredients[1];
+    const time = recipe?.timeMinutes;
+    const prompts: string[] = [];
+    if (ingA) prompts.push(`No ${ingA} – swap?`);
+    if (ingB) prompts.push(`${ingB} dislike – change?`);
+    prompts.push("Lighter version?");
+    prompts.push("Scale to 5?");
+    if (typeof time === "number" && time > 0) {
+      const target = Math.max(15, Math.min(45, time));
+      prompts.push(`${target} min only – shortcut?`);
+    }
+    return prompts.slice(0, 5);
+  }, [recipeTitle, keyIngredients, recipe]);
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -40,9 +60,9 @@ export function RecipeAIHelper({ slug, recipeTitle }: Props) {
       {/* Helper card */}
       <div className="rounded-2xl border border-slate-900/10 bg-slate-900 text-slate-50 p-5 space-y-4">
         <div className="space-y-1">
-          <h2 className="text-lg font-semibold">Ask the AI about this</h2>
+          <h2 className="text-lg font-semibold">Got a question?</h2>
           <p className="text-xs text-slate-300">
-            Tell it what you forgot to buy, what you don&apos;t like, or how much time you actually have. The AI only knows my recipes and will try to adapt this one around you.
+            Swaps, time, scaling for {recipeTitle}. Keep it simple.
           </p>
         </div>
 
@@ -52,7 +72,7 @@ export function RecipeAIHelper({ slug, recipeTitle }: Props) {
             onChange={(e) => setQuestion(e.target.value)}
             rows={3}
             className="w-full rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm text-slate-50 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500"
-            placeholder='e.g. "I forgot to buy garlic, what can I do?"'
+            placeholder={`e.g. No ${keyIngredients[0] ?? "ingredient"} – swap?`}
           />
           <button
             type="submit"
@@ -78,7 +98,7 @@ export function RecipeAIHelper({ slug, recipeTitle }: Props) {
             ))}
           </ul>
           <p className="text-[10px] text-slate-400 pt-1">
-            The AI is for general cooking guidance only, not medical or clinical nutrition advice.
+            General cooking guidance only – not medical or clinical nutrition advice.
           </p>
         </div>
       </div>

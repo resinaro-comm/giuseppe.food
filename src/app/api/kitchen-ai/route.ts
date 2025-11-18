@@ -97,6 +97,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    // Soft paywall/gate: allow up to 5 AI replies per day unless verified
+    const isVerified = req.cookies.get("ai_verified")?.value === "1";
+    if (!isVerified) {
+      const gate = await checkLimit(`gate:msgs:${ip}`, 7, 24 * 3600);
+      if (!gate.allowed) {
+        return NextResponse.json(
+          { error: "signup_required", requireSignup: true },
+          { status: 429 }
+        );
+      }
+    }
+
     // Per-minute and per-day caps for the AI endpoint
     const minuteKey = `ai:pm:${ip}`;
     const minute = await checkLimit(minuteKey, 10, 60); // 10/min
@@ -135,7 +147,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json().catch(() => null);
+  const body = await req.json().catch(() => null);
 
     if (!body || typeof body.message !== "string") {
       return NextResponse.json(
@@ -145,6 +157,10 @@ export async function POST(req: NextRequest) {
     }
 
     const userMessage = body.message as string;
+    const history = Array.isArray(body.history)
+      ? (body.history as Array<{ role: string; content: string }>)
+          .filter((m) => typeof m?.role === "string" && typeof m?.content === "string")
+      : [];
     const recipeSlug =
       typeof body.recipeSlug === "string" ? body.recipeSlug : null;
     const agent: AgentId =
@@ -189,12 +205,20 @@ ${recipe.steps.map((s, i) => `${i + 1}. ${s}`).join("\n")}
 }
 `.trim();
 
+    const messagesPayload = [
+      { role: "system" as const, content: systemPrompt },
+      ...history
+        .slice(-20)
+        .map((m) => ({
+          role: m.role === "assistant" ? ("assistant" as const) : ("user" as const),
+          content: m.content as string,
+        })),
+      { role: "user" as const, content: userMessage },
+    ];
+
     const completion = await client.chat.completions.create({
       model: "gpt-4.1-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
+      messages: messagesPayload,
       temperature: agent === "chef" ? 0.7 : 0.6, // slightly toned-down for tighter replies
       max_tokens: 260,
     });
