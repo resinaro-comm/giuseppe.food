@@ -1,32 +1,33 @@
 // src/components/navbar.tsx
 import Link from "next/link";
 
+// Only show secondary links; brand acts as Home link.
 const navItems = [
-  { href: "/", label: "Home" },
   { href: "/recipes", label: "Recipes" },
   { href: "/ai", label: "AI Kitchen" },
 ] as const;
 
 export function NavBar() {
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur bg-white/80 border-b border-slate-200">
-      <nav className="container-base h-16 flex items-center justify-between">
+    <header className="sticky top-10 z-40 w-full backdrop-blur bg-white/80 border-b border-slate-200">
+      <nav className="container-base h-12 flex items-center justify-between">
         {/* Brand */}
+        {/* Brand doubles as Home link */}
         <Link
           href="/"
-          className="text-lg md:text-xl font-semibold tracking-tight text-slate-900"
+          className="text-sm font-semibold tracking-tight text-slate-900"
         >
           giuseppe.food
         </Link>
 
         <div className="flex items-center gap-4">
           {/* Main nav */}
-          <ul className="hidden sm:flex items-center gap-5 text-sm font-medium">
+          <ul className="flex items-center gap-5 text-sm font-medium">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="text-slate-700 hover:text-slate-900 transition-colors"
+                  className="text-slate-700 hover:text-slate-900 transition-colors text-sm"
                 >
                   {item.label}
                 </Link>
@@ -40,7 +41,7 @@ export function NavBar() {
               href="https://www.instagram.com/ggg002g"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white h-8 w-8 text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition"
+              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white h-7 w-7 text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition"
               aria-label="Instagram"
             >
               {/* Instagram icon */}
@@ -72,10 +73,10 @@ export function NavBar() {
             </a>
 
             <a
-              href="https://www.tiktok.com/@gggg0002g"
+              href="https://www.tiktok.com/@giuseppe.food"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white h-8 w-8 text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition"
+              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white h-7 w-7 text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition"
               aria-label="TikTok"
             >
               {/* TikTok icon */}
