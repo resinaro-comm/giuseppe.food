@@ -15,6 +15,36 @@ export type Recipe = {
 
 export const recipes: Recipe[] = [
   {
+    slug: "apple-cake",
+    title: "Apple Cake",
+    thumbnail: "/images/apple-cake.jpg",
+    shortDescription:
+      "One-bowl Italian-style apple cake – melt, mix, bake.",
+    timeMinutes: 40,
+    tags: ["dessert", "baking", "cake"],
+    instagramUrl: "https://www.instagram.com/reel/DRNOsCHAtk3/",
+    videoUrl: "/videos/apple-cake.mp4",
+    ingredients: [
+      "150 g plain flour",
+      "115 g butter, melted",
+      "120 g caster sugar",
+      "1 tsp baking powder",
+      "2 eggs",
+      "4 medium apples, peeled (slice)",
+      "2 tbsp alcohol for flavour (e.g. rum, brandy)",
+    ],
+    steps: [
+      "Heat oven to 180°C. Line and lightly butter a small baking tin (approx 20 cm).",
+      "Peel apples and slice (medium thickness).",
+      "In a bowl, whisk eggs with sugar until combined, then whisk in melted butter.",
+      "Fold in flour and baking powder until just smooth (don’t overmix).",
+      "Stir in the alcohol if using, then fold through the sliced apples.",
+      "Scrape batter into the lined tin and level.",
+      "Bake about 40 minutes at 180°C until golden and a skewer comes out clean.",
+      "Cool slightly, slice and serve (plain, or with cream/ice cream).",
+    ],
+  },
+  {
     slug: "roast-chicken",
     title: "Roast Chicken",
     thumbnail: "/images/roast-chicken.jpg", // TODO: add this to /public/images

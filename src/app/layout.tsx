@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-slate-50 text-slate-900">
+      <body className="bg-slate-50 text-slate-900 font-body">
         <div className="min-h-screen flex flex-col">
           {/* Site-wide banner above nav */}
           <SiteBanner />

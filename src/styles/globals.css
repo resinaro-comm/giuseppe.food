@@ -20,10 +20,42 @@ body {
 
 /* Base styles */
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Ubuntu, Cantarell, "Noto Sans", sans-serif;
+  font-family: "Lora", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Ubuntu, Cantarell, "Noto Sans", serif;
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Local font faces (self-hosted) */
+@font-face {
+  font-family: "Italiana";
+  src: url("/fonts/Italiana-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lora";
+  src: url("/fonts/Lora-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Italianno";
+  src: url("/fonts/Italianno-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  h1, h2, h3 {
+    font-family: "Italiana", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    letter-spacing: 0.2px;
+  }
 }
 
 /* Tailwind utility-style classes need to live inside a layer */
@@ -84,4 +116,15 @@ body {
     color: rgb(30 41 59); /* slate-800 */
   }
   .ai-md a { @apply underline; }
+
+  /* Font utilities */
+  .font-heading {
+    font-family: "Italiana", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  }
+  .font-body {
+    font-family: "Lora", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", serif;
+  }
+  .font-accent {
+    font-family: "Italianno", "Apple Chancery", "Segoe Script", cursive;
+  }
 }
