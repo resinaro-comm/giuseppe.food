@@ -15,6 +15,36 @@ export type Recipe = {
 
 export const recipes: Recipe[] = [
   {
+    slug: "avocado-salad",
+    title: "Avocado Salad",
+    thumbnail: "/images/avocado-salad.jpg", // add a screenshot to this path
+    shortDescription:
+      "Fresh avocado, tomato and cucumber tossed in a lemon–oregano dressing.",
+    timeMinutes: 10,
+    tags: ["salad", "quick", "no-cook", "vegetarian"],
+    instagramUrl: "https://www.instagram.com/reel/DRPdDS6Au-x/",
+    videoUrl: "/videos/avocado-salad.mp4",
+    ingredients: [
+      "1 avocado – sliced",
+      "2 tomatoes – sliced",
+      "1/2 cucumber – sliced",
+      "1/2 small red onion – sliced",
+      "1 tbsp parsley – chopped",
+      "80 ml extra‑virgin Italian olive oil",
+      "1 tbsp dried oregano",
+      "2 tsp black pepper",
+      "1 tsp salt",
+      "1 fresh chilli (optional)",
+      "~1 tbsp lemon juice",
+      "1 tbsp white vinegar (high quality)",
+    ],
+    steps: [
+      "In a bowl add the sliced avocado, tomatoes, cucumber, red onion and chopped parsley.",
+      "Make the dressing: whisk olive oil with dried oregano, black pepper, salt, finely sliced chilli if using, lemon juice and white vinegar.",
+      "Pour the dressing over the salad, toss gently to coat, taste and adjust seasoning, then serve immediately.",
+    ],
+  },
+  {
     slug: "apple-cake",
     title: "Apple Cake",
     thumbnail: "/images/apple-cake.jpg",
