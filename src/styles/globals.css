@@ -9,6 +9,8 @@
 :root {
   --background: #f8fafc; /* slate-50 */
   --foreground: #0f172a; /* slate-900 */
+  /* Bottom offset for floating AI widget launcher/panel */
+  --ai-widget-bottom-offset: 1rem;
 }
 
 /* Reset-ish */
@@ -126,5 +128,13 @@ body {
   }
   .font-accent {
     font-family: "Italianno", "Apple Chancery", "Segoe Script", cursive;
+  }
+}
+
+/* Mobile comfort spacing for floating AI widget */
+@media (max-width: 640px) {
+  :root {
+    /* Lift the chat above toolbars/CTA so input remains visible */
+    --ai-widget-bottom-offset: 5.5rem;
   }
 }

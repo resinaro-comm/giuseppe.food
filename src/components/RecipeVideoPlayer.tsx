@@ -18,10 +18,17 @@ export function RecipeVideoPlayer({ videoUrl, instagramUrl, poster }: RecipeVide
       >
         <video
           controls
+          muted
+          defaultMuted
           playsInline
           preload="auto"
           poster={poster}
           className="w-full h-full object-cover object-center"
+          onVolumeChange={(e) => {
+            // Enforce muted playback even if users tweak controls
+            if (!e.currentTarget.muted) e.currentTarget.muted = true;
+            e.currentTarget.volume = 0;
+          }}
         >
           <source src={videoUrl} type="video/mp4" />
           Your browser doesn&apos;t support video playback.

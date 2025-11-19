@@ -1,3 +1,4 @@
+// src/components/AIChatWidget.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -81,48 +82,75 @@ export function AIChatWidget() {
 
   const contents = (
     <div
-      className="fixed right-3 bottom-3 md:right-6 md:bottom-6 z-[70] flex flex-col items-end gap-2"
+      className="fixed z-[70] flex flex-col items-end gap-2"
+      style={{
+        right:
+          "calc(env(safe-area-inset-right, 0px) + 1rem)",
+        bottom:
+          "calc(env(safe-area-inset-bottom, 0px) + var(--ai-widget-bottom-offset, 1.25rem))",
+      }}
       aria-live="polite"
     >
-      {/* Chat panel */}
-      {open && (
-        <div className="rounded-2xl border border-slate-200 bg-white/95 backdrop-blur shadow-2xl w-[min(92vw,22rem)] h-[60vh] md:w-[22rem] md:h-[28rem] overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between px-3 py-2 border-b border-slate-200 bg-white/80 backdrop-blur-sm">
-            <div className="text-xs font-medium text-slate-700">AI Kitchen</div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="inline-flex items-center justify-center h-7 w-7 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-100"
-              aria-label="Minimise"
-            >
-              ×
-            </button>
+      {/* Chat panel: kept mounted so conversations persist when minimised */}
+      <div
+        className={`flex flex-col overflow-hidden rounded-2xl border border-slate-800/20 bg-white/95 backdrop-blur shadow-2xl shadow-slate-900/20 w-[min(92vw,22rem)] h-[22rem] md:h-[26rem] max-h-[75vh] transition-all duration-150 ${
+          open
+            ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+            : "opacity-0 translate-y-1 scale-[0.98] pointer-events-none"
+        }`}
+        aria-hidden={!open}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800/50 bg-slate-900/95 text-slate-50">
+          <div className="flex items-center gap-2 text-xs">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px] font-semibold">
+              G
+            </div>
+            <div className="flex flex-col">
+              <span className="font-medium tracking-tight">AI Kitchen</span>
+              <span className="text-[10px] text-slate-300">
+                Chef · Nutrition · Planner
+              </span>
+            </div>
           </div>
-          <div className="flex-1 p-2">
-            <AIChat
-              className="h-full"
-              fitContainer
-              greetingText="I’ll keep it simple. Ask about swaps, time, scaling or nutrition and I’ll adapt the recipes around you."
-              sessionKey="widget"
-              recipeSlug={recipeSlug}
-              initialQuestion={initialQ}
-              autoStart={!!initialQ}
-              pageContext={pageCtx}
-            />
-          </div>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600/70 text-slate-50 hover:bg-slate-800"
+            aria-label="Minimise AI chat"
+          >
+            –
+          </button>
         </div>
-      )}
+
+        {/* Chat body */}
+        <div className="flex-1 bg-slate-50/80 p-2">
+          <AIChat
+            className="h-full"
+            fitContainer
+            greetingText="I’ll keep it simple. Ask about swaps, time, scaling or nutrition and I’ll adapt the recipes around you."
+            sessionKey="widget"
+            recipeSlug={recipeSlug}
+            initialQuestion={initialQ}
+            autoStart={!!initialQ}
+            pageContext={pageCtx}
+          />
+        </div>
+      </div>
 
       {/* Launcher button */}
       {!open && (
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center justify-center rounded-full bg-slate-900 text-white h-11 w-11 shadow-2xl shadow-slate-900/30 text-lg hover:bg-slate-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+          className="inline-flex items-center gap-2 rounded-full bg-slate-900 text-white px-4 h-10 text-xs font-semibold shadow-2xl shadow-slate-900/30 hover:bg-slate-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
           aria-label="Open AI Kitchen chat"
           aria-expanded={open}
         >
-          💬
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-[11px]">
+            💬
+          </span>
+          <span>Ask the AI</span>
         </button>
       )}
     </div>
