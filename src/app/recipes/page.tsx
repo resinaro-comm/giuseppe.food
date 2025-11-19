@@ -24,9 +24,7 @@ export default function RecipesPage() {
       <Reveal className="space-y-3">
         <h1 className="text-2xl md:text-3xl font-semibold">Recipes</h1>
         <p className="text-sm md:text-base text-slate-600 max-w-2xl">
-          All the full recipes from my Instagram, TikTok and YouTube videos,
-          with ingredients, steps, and an AI helper that can adapt each dish to
-          what&apos;s in your fridge.
+          full recipes below, good luck.
         </p>
       </Reveal>
 

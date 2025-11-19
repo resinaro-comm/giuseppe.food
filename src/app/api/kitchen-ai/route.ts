@@ -45,7 +45,7 @@ function buildRecipeCatalog() {
       const tags = r.tags?.slice(0, 5).join(", ") ?? "";
       // Include first few ingredients to give the model signal without huge tokens
       const ingredients = (r.ingredients ?? []).slice(0, 5).join(", ");
-      lines.push(`- ${r.title} (/${r.slug}) · ${time} · ${tags}${ingredients ? ` · ${ingredients}` : ""}`);
+      lines.push(`- ${r.title} (/recipes/${r.slug}) · ${time} · ${tags}${ingredients ? ` · ${ingredients}` : ""}`);
     }
     return lines.join("\n");
   } catch {
@@ -163,6 +163,7 @@ export async function POST(req: NextRequest) {
       : [];
     const recipeSlug =
       typeof body.recipeSlug === "string" ? body.recipeSlug : null;
+    const pageContext = typeof body.pageContext === "object" && body.pageContext !== null ? body.pageContext as { path?: string; source?: string; section?: string; scrollY?: number } : undefined;
     const agent: AgentId =
       body.agent === "nutrition" || body.agent === "planner"
         ? body.agent
@@ -182,6 +183,11 @@ ${BASE_SYSTEM_PROMPT}
 
 Active agent:
 ${AGENT_PROMPTS[agent]}
+
+  LINKING & URLS:
+  - When you mention a recipe that appears in the catalog below, always include a Markdown link to its page using the relative path: /recipes/<slug>.
+  - Example: [Chicken Cutlets](/recipes/chicken-cutlets). If the user asks for a link, include the Markdown link and the bare URL.
+  - Do not invent URLs. Only use slugs present in the catalog.
 
 SITE RECIPE CATALOG (only answer using items listed here; do NOT invent recipes):
 ${buildRecipeCatalog()}
@@ -203,6 +209,12 @@ ${recipe.steps.map((s, i) => `${i + 1}. ${s}`).join("\n")}
 `
     : "No specific recipe was provided."
 }
+
+PAGE CONTEXT (use to tailor answers; don't restate unless helpful):
+PATH: ${pageContext?.path ?? "unknown"}
+SOURCE: ${pageContext?.source ?? "unknown"}
+SECTION: ${pageContext?.section ?? "unknown"}
+SCROLL_Y: ${typeof pageContext?.scrollY === 'number' ? String(pageContext?.scrollY) : "unknown"}
 `.trim();
 
     const messagesPayload = [
@@ -223,9 +235,24 @@ ${recipe.steps.map((s, i) => `${i + 1}. ${s}`).join("\n")}
       max_tokens: 260,
     });
 
-    const reply =
+    let reply =
       completion.choices[0]?.message?.content?.trim() ??
       "I couldn't generate a response just now. Try asking again in a moment.";
+
+    // Post-process to fix any bare /<slug> into /recipes/<slug> and encourage clickable links
+    try {
+      const slugs = recipes.map((r) => r.slug).join("|");
+      if (slugs) {
+        const re = new RegExp(`(^|[^/])\\/(${slugs})(?=[^a-z0-9-]|$)`, "gi");
+        reply = reply.replace(re, (_m, p1, p2) => `${p1}/recipes/${p2}`);
+        // Clean any accidental double replacement
+        reply = reply.replace(/\/recipes\/recipes\//g, "/recipes/");
+
+        // Wrap bare /recipes/<slug> in Markdown so it's clickable
+        const bare = new RegExp(`(^|\\s)(\\/recipes\\/(?:${slugs}))(?=\\s|[\\.,;!\?\)]|$)`, "gi");
+        reply = reply.replace(bare, (_m, p1, p2) => `${p1}[${p2}](${p2})`);
+      }
+    } catch {}
 
     return NextResponse.json({ reply });
   } catch (err) {

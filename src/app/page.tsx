@@ -1,4 +1,6 @@
-// src/app/page.tsx
+"use client";
+
+import { useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { recipes } from "../data/recipes";
@@ -8,12 +10,26 @@ export default function HomePage() {
   // Choose explicit hero and featured items
   const heroRecipe =
     recipes.find((r) => r.slug === "chicken-cutlets") ?? recipes[0];
-  const featuredSlugs = [
-    "matcha-cookies",
-    "beef-braciole",
-    "chicken-strips",
-  ];
+  const featuredSlugs = ["matcha-cookies", "beef-braciole", "chicken-strips"];
   const featured = recipes.filter((r) => featuredSlugs.includes(r.slug));
+
+  const openAIWidget = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    // Prefer the imperative opener if it exists
+    const anyWindow = window as any;
+    if (typeof anyWindow.__aiWidgetOpen === "function") {
+      anyWindow.__aiWidgetOpen();
+      return;
+    }
+
+    // Fallback: dispatch the custom event the widget listens for
+    window.dispatchEvent(
+      new CustomEvent("ai-widget:open", {
+        detail: {},
+      })
+    );
+  }, []);
 
   return (
     <div className="relative -mt-12 md:mt-0 space-y-20">
@@ -30,6 +46,7 @@ export default function HomePage() {
           backgroundPosition: "left top, right 10% top, center bottom",
         }}
       />
+
       {/* HERO */}
       <section className="relative grid gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-center">
         <Reveal className="space-y-6 text-center md:text-left">
@@ -38,12 +55,16 @@ export default function HomePage() {
           </p>
           <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
             Short videos,
-            <br className="hidden md:block" />
-            {" "}
-            <span className="underline decoration-slate-400/70 underline-offset-4">full</span> recipes.
+            <br className="hidden md:block" />{" "}
+            <span className="underline decoration-slate-400/70 underline-offset-4">
+              full
+            </span>{" "}
+            recipes.
           </h1>
           <p className="text-slate-600 text-sm md:text-base max-w-xl mx-auto md:mx-0">
-            Every dish from my socials with proper ingredients and steps.
+            Recipes from my short-form videos, written out properly so you
+            don&apos;t have to pause 20 times. Plus an AI helper that can adapt
+            them around what you&apos;ve actually got.
           </p>
           <div className="flex flex-wrap gap-3 justify-center md:justify-start">
             <Link
@@ -52,16 +73,16 @@ export default function HomePage() {
             >
               Browse recipes
             </Link>
-            <Link
-              href="/ai"
+            <button
+              type="button"
+              onClick={openAIWidget}
               className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium border border-slate-300 text-slate-800 hover:bg-slate-100 transition"
             >
-              Try the AI helper
-            </Link>
+              ask AI
+            </button>
           </div>
           <p className="text-xs text-slate-500">
-            Recipes are added from my latest videos as they
-            go live.
+            Recipes are added from my latest videos when they get uploaded.
           </p>
         </Reveal>
 
@@ -83,7 +104,7 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 space-y-1">
                   <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-200">
-                    From my socials
+                    recent video
                   </p>
                   <h2 className="text-lg md:text-xl font-semibold text-white drop-shadow">
                     {heroRecipe.title}
@@ -111,10 +132,8 @@ export default function HomePage() {
                   ))}
                 </div>
                 <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Tap to see full recipe</span>
-                  <span className="inline-flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    <span>AI helper ready</span>
+                  <span>
+                    tap to see full recipe and the instructions for this.
                   </span>
                 </div>
               </div>
@@ -126,10 +145,15 @@ export default function HomePage() {
       {/* HOW IT WORKS */}
       <section className="relative">
         <Reveal className="mb-6">
-          <h2 className="text-xl md:text-2xl font-semibold text-center md:text-left">How it works</h2>
+          <h2 className="text-xl md:text-2xl font-semibold text-center md:text-left">
+            How it works
+          </h2>
         </Reveal>
         <div className="grid gap-6 md:grid-cols-3 max-w-xl mx-auto md:max-w-none">
-          <Reveal className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left" delay={50}>
+          <Reveal
+            className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left"
+            delay={50}
+          >
             <p className="text-xs font-semibold text-slate-500">STEP 1</p>
             <h3 className="font-medium">Find the dish</h3>
             <p className="text-sm text-slate-600">
@@ -137,7 +161,10 @@ export default function HomePage() {
               full written recipe here.
             </p>
           </Reveal>
-          <Reveal className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left" delay={120}>
+          <Reveal
+            className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left"
+            delay={120}
+          >
             <p className="text-xs font-semibold text-slate-500">STEP 2</p>
             <h3 className="font-medium">Cook it properly</h3>
             <p className="text-sm text-slate-600">
@@ -145,7 +172,10 @@ export default function HomePage() {
               20 times to catch what happened.
             </p>
           </Reveal>
-          <Reveal className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left" delay={180}>
+          <Reveal
+            className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left"
+            delay={180}
+          >
             <p className="text-xs font-semibold text-slate-500">STEP 3</p>
             <h3 className="font-medium">Ask the AI to adapt</h3>
             <p className="text-sm text-slate-600">
@@ -154,23 +184,25 @@ export default function HomePage() {
             </p>
           </Reveal>
         </div>
-        {/* Subtle divider */}
         <div className="mt-10 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
       </section>
 
       {/* LATEST / FEATURED RECIPES */}
       <section className="relative space-y-6">
         <Reveal className="flex items-center justify-between">
-          <h2 className="text-xl md:text-2xl font-semibold">Latest from the kitchen</h2>
-          <Link href="/recipes" className="text-xs font-medium text-slate-600 hover:text-slate-900">
+          <h2 className="text-xl md:text-2xl font-semibold">
+            Latest from the kitchen
+          </h2>
+          <Link
+            href="/recipes"
+            className="text-xs font-medium text-slate-600 hover:text-slate-900"
+          >
             View all recipes
           </Link>
         </Reveal>
         <div className="grid gap-6 md:grid-cols-3">
           {featured.map((recipe) => (
-            <Reveal
-              key={recipe.slug}
-            >
+            <Reveal key={recipe.slug}>
               <Link
                 href={`/recipes/${recipe.slug}`}
                 className="group rounded-2xl border border-slate-200 bg-white/90 backdrop-blur overflow-hidden hover:border-slate-300 hover:shadow-sm transition flex flex-col"
@@ -228,20 +260,21 @@ export default function HomePage() {
             </h2>
             <p className="text-sm md:text-base text-slate-200">
               Tell it what&apos;s in your fridge, how much time you&apos;ve got,
-              and roughly what you&apos;re aiming for. It uses my recipes to
-              suggest and adapt meals around you — not random internet food.
+              and roughly what you&apos;re aiming for. It should be able to help
+              you in the kitchen.
             </p>
             <p className="text-[11px] text-slate-400">
               Not medical or clinical nutrition advice. Just a smarter way to
               actually use the recipes you see on my socials.
             </p>
           </div>
-          <Link
-            href="/ai"
+          <button
+            type="button"
+            onClick={openAIWidget}
             className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium bg-white text-slate-900 hover:bg-slate-100 transition self-center md:self-auto"
           >
             Open AI Kitchen
-          </Link>
+          </button>
         </Reveal>
       </section>
     </div>

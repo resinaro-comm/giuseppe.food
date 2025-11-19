@@ -1,10 +1,10 @@
+"use client";
 // src/components/navbar.tsx
 import Link from "next/link";
 
 // Only show secondary links; brand acts as Home link.
 const navItems = [
   { href: "/recipes", label: "Recipes" },
-  { href: "/ai", label: "AI Kitchen" },
 ] as const;
 
 export function NavBar() {

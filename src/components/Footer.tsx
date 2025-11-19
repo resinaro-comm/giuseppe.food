@@ -1,7 +1,26 @@
+"use client";
+
+import { useCallback } from "react";
 import Link from "next/link";
 
 export function Footer() {
   const year = new Date().getFullYear();
+
+  const openAIWidget = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const anyWindow = window as any;
+    if (typeof anyWindow.__aiWidgetOpen === "function") {
+      anyWindow.__aiWidgetOpen();
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent("ai-widget:open", {
+        detail: {},
+      })
+    );
+  }, []);
 
   return (
     <footer className="mt-auto border-t border-slate-200 bg-white/80 backdrop-blur">
@@ -26,9 +45,13 @@ export function Footer() {
               Recipes
             </Link>
             <span className="text-slate-400">·</span>
-            <Link href="/ai" className="hover:text-slate-900">
+            <button
+              type="button"
+              onClick={openAIWidget}
+              className="hover:text-slate-900"
+            >
               AI Kitchen
-            </Link>
+            </button>
           </div>
 
           {/* Contact */}

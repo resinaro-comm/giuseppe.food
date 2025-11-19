@@ -36,6 +36,15 @@ export type AIChatProps = {
   initialQuestion?: string;
   autoStart?: boolean;
   className?: string;
+  fitContainer?: boolean; // When true, fills parent and makes chat window flexible
+  greetingText?: string; // Override initial greeting text
+  sessionKey?: string; // Persist chat per session key so multiple chats stay separate
+  pageContext?: {
+    path?: string;
+    source?: string;
+    section?: string;
+    scrollY?: number;
+  };
 };
 
 export function AIChat({
@@ -44,22 +53,50 @@ export function AIChat({
   initialQuestion,
   autoStart,
   className,
+  fitContainer,
+  greetingText,
+  sessionKey,
+  pageContext,
 }: AIChatProps) {
   const [input, setInput] = useState<string>(initialQuestion ?? "");
   const [isSending, setIsSending] = useState(false);
   const [agent, setAgent] = useState<AgentId>(initialAgent);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "welcome",
-      author: "ai",
-      text:
-        "I’ll keep it simple. Ask about swaps, time, scaling or nutrition and I’ll adapt the recipes around you.",
-      animate: true,
-    },
-  ]);
+  const defaultWelcome: ChatMessage = {
+    id: "welcome",
+    author: "ai",
+    text:
+      greetingText ??
+      "I’ll keep it simple. Ask about swaps, time, scaling or nutrition and I’ll adapt the recipes around you.",
+    animate: true,
+  };
+  const [messages, setMessages] = useState<ChatMessage[]>([defaultWelcome]);
   const [showGate, setShowGate] = useState(false);
 
-  const startedRef = useRef(false);
+  // Track last auto-start question so we can trigger multiple times
+  const lastAutoQRef = useRef<string | null>(null);
+
+  // Load/persist per-session history so chats are separate and sticky
+  useEffect(() => {
+    if (!sessionKey) return;
+    try {
+      const raw = localStorage.getItem(`ai_chat_${sessionKey}`);
+      if (raw) {
+        const parsed = JSON.parse(raw) as ChatMessage[];
+        if (Array.isArray(parsed) && parsed.length) {
+          setMessages(parsed);
+        }
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionKey]);
+
+  useEffect(() => {
+    if (!sessionKey) return;
+    try {
+      const toStore = JSON.stringify(messages.slice(-100));
+      localStorage.setItem(`ai_chat_${sessionKey}`, toStore);
+    } catch {}
+  }, [messages, sessionKey]);
 
   const selectedRecipe = useMemo(
     () => recipes.find((r) => r.slug === recipeSlug),
@@ -103,13 +140,12 @@ export function AIChat({
   }, [selectedRecipe]);
 
   useEffect(() => {
-    if (!autoStart || startedRef.current) return;
+    if (!autoStart) return;
     const q = (initialQuestion ?? "").trim();
-    if (q) {
-      startedRef.current = true;
-      // fire and forget
-      void sendMessage(q);
-    }
+    if (!q) return;
+    if (lastAutoQRef.current === q) return;
+    lastAutoQRef.current = q;
+    void sendMessage(q);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoStart, initialQuestion]);
 
@@ -140,6 +176,7 @@ export function AIChat({
           recipeSlug: selectedRecipe?.slug ?? null,
           agent,
           history,
+          pageContext,
         }),
       });
 
@@ -196,14 +233,19 @@ export function AIChat({
     ]);
   };
 
+  const containerClasses = fitContainer ? `h-full flex flex-col ${className ?? ""}` : className ?? "";
+  const chatWindowClasses = fitContainer
+    ? "rounded-2xl border border-slate-200 bg-white flex flex-col flex-1 min-h-0"
+    : "rounded-2xl border border-slate-200 bg-white flex flex-col h-[480px] md:h-[560px]";
+
   return (
-    <section className={className}>
+    <section className={containerClasses}>
       {showGate && (
         <SignupGate open={showGate} onClose={() => setShowGate(false)} onVerified={() => setShowGate(false)} />
       )}
       {/* Agent toggle */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-        <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1 text-xs">
+        <div className="hidden sm:inline-flex rounded-full border border-slate-200 bg-slate-100 p-1 text-xs">
           {([
             ["chef", "Chef"],
             ["nutrition", "Nutrition"],
@@ -227,20 +269,20 @@ export function AIChat({
         <button
           type="button"
           onClick={handleClear}
-          className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2"
+          className="hidden sm:inline text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2"
         >
           Clear chat
         </button>
       </div>
 
-      <p className="text-[11px] text-slate-500 mb-2">
+      <p className="hidden sm:block text-[11px] text-slate-500 mb-2">
         <span className="font-medium">{agentLabels[agent]} mode:</span>{" "}
         {agentTaglines[agent]}
       </p>
 
       {/* Chat window */}
-      <div className="rounded-2xl border border-slate-200 bg-white flex flex-col h-[480px] md:h-[560px]">
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+      <div className={chatWindowClasses}>
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0">
           {messages.map((msg) => (
             <div
               key={msg.id}
