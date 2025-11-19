@@ -91,13 +91,14 @@ export function AIChatWidget() {
       }}
       aria-live="polite"
     >
-      {/* Chat panel: kept mounted so conversations persist when minimised */}
+      {/* Chat panel: keep mounted so state persists; allow internal scroll */}
       <div
-        className={`flex flex-col overflow-hidden rounded-2xl border border-slate-800/20 bg-white/95 backdrop-blur shadow-2xl shadow-slate-900/20 w-[min(92vw,22rem)] h-[22rem] md:h-[26rem] max-h-[75vh] transition-all duration-150 ${
+        className={`flex flex-col rounded-2xl border border-slate-800/20 bg-white/95 backdrop-blur shadow-2xl shadow-slate-900/20 w-[min(92vw,22rem)] max-h-[75vh] transition-all duration-150 ${
           open
             ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
             : "opacity-0 translate-y-1 scale-[0.98] pointer-events-none"
         }`}
+        style={{ height: open ? 'min(26rem,75vh)' : 'min(22rem,75vh)' }}
         aria-hidden={!open}
       >
           {/* Header */}
@@ -124,7 +125,7 @@ export function AIChatWidget() {
         </div>
 
         {/* Chat body */}
-        <div className="flex-1 bg-slate-50/80 p-2">
+        <div className="flex-1 min-h-0 bg-slate-50/80 p-2 overflow-hidden">
           <AIChat
             className="h-full"
             fitContainer
