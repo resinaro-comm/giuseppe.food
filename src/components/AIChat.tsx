@@ -326,7 +326,10 @@ export function AIChat({
       {/* Chat window */}
       <div className={chatWindowClasses}>
         {/* Messages */}
-        <div className="flex-1 min-h-0 space-y-3 overflow-y-auto px-4 py-3">
+        <div
+          className="flex-1 min-h-0 space-y-3 overflow-y-auto px-4 py-3 touch-pan-y"
+          style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
+        >
           {messages.map((msg) => (
             <div
               key={msg.id}

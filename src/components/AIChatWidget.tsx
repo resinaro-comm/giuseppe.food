@@ -100,7 +100,7 @@ export function AIChatWidget() {
         }`}
         aria-hidden={!open}
       >
-        {/* Header */}
+          {/* Header */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800/50 bg-slate-900/95 text-slate-50">
           <div className="flex items-center gap-2 text-xs">
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px] font-semibold">
