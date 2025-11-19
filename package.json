@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "videos:prepare": "node scripts/prepare-videos.mjs"
+    "videos:prepare": "node scripts/prepare-videos.mjs",
+    "recipe:add": "node scripts/add-recipe.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^1.1.0",
