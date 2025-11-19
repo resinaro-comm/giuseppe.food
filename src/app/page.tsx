@@ -101,8 +101,8 @@ export default function HomePage() {
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 space-y-1">
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="pointer-events-none absolute bottom-4 left-4 right-4 space-y-1">
                   <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-200">
                     recent video
                   </p>
@@ -215,8 +215,8 @@ export default function HomePage() {
                     sizes="(min-width: 1024px) 20vw, 50vw"
                     className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
-                  <div className="absolute bottom-3 left-3 right-3">
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                  <div className="pointer-events-none absolute bottom-3 left-3 right-3">
                     <p className="text-[9px] font-medium uppercase tracking-[0.16em] text-slate-200 mb-1">
                       VIDEO RECIPE
                     </p>

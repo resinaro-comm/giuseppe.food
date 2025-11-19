@@ -82,7 +82,7 @@ export function AIChatWidget() {
 
   const contents = (
     <div
-      className="fixed z-[70] flex flex-col items-end gap-2"
+      className="fixed z-[70] flex flex-col items-end gap-2 pointer-events-none"
       style={{
         right:
           "calc(env(safe-area-inset-right, 0px) + 1rem)",
@@ -93,7 +93,7 @@ export function AIChatWidget() {
     >
       {/* Chat panel: keep mounted so state persists; allow internal scroll */}
       <div
-        className={`flex flex-col rounded-2xl border border-slate-800/20 bg-white/95 backdrop-blur shadow-2xl shadow-slate-900/20 w-[min(92vw,22rem)] max-h-[75vh] transition-all duration-150 ${
+        className={`pointer-events-auto flex flex-col rounded-2xl border border-slate-800/20 bg-white/95 backdrop-blur shadow-2xl shadow-slate-900/20 w-[min(92vw,22rem)] max-h-[75vh] transition-all duration-150 ${
           open
             ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
             : "opacity-0 translate-y-1 scale-[0.98] pointer-events-none"
@@ -144,7 +144,7 @@ export function AIChatWidget() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full bg-slate-900 text-white px-4 h-10 text-xs font-semibold shadow-2xl shadow-slate-900/30 hover:bg-slate-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+          className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-slate-900 text-white px-4 h-10 text-xs font-semibold shadow-2xl shadow-slate-900/30 hover:bg-slate-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
           aria-label="Open AI Kitchen chat"
           aria-expanded={open}
         >
