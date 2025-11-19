@@ -1,4 +1,6 @@
-'use client';
+"use client";
+
+import { useEffect, useRef } from "react";
 
 interface RecipeVideoPlayerProps {
   videoUrl: string;
@@ -7,6 +9,16 @@ interface RecipeVideoPlayerProps {
 }
 
 export function RecipeVideoPlayer({ videoUrl, instagramUrl, poster }: RecipeVideoPlayerProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.defaultMuted = true;
+    video.muted = true;
+    video.volume = 0;
+  }, [videoUrl]);
+
   return (
     <div className="space-y-3">
       <h2 className="text-sm font-semibold text-slate-700">
@@ -17,9 +29,9 @@ export function RecipeVideoPlayer({ videoUrl, instagramUrl, poster }: RecipeVide
         style={{ aspectRatio: '4 / 5', maxHeight: '450px' }}
       >
         <video
+          ref={videoRef}
           controls
           muted
-          defaultMuted
           playsInline
           preload="auto"
           poster={poster}
