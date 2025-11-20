@@ -3,6 +3,7 @@ import Link from "next/link";
 import { recipes } from "../../data/recipes";
 import RecipeCover from "@components/RecipeCover";
 import { Reveal } from "@components/Reveal";
+import { RecipeCard } from "@components/RecipeCard";
 
 function badgeForRecipe(recipe: { title: string; tags: string[]; timeMinutes?: number }) {
   const tags = new Set((recipe.tags || []).map((t) => t.toLowerCase()));
@@ -34,51 +35,19 @@ export default function RecipesPage() {
       <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe, idx) => (
           <Reveal key={recipe.slug} delay={idx * 50}>
-            <Link
+            <RecipeCard
               href={`/recipes/${recipe.slug}`}
-              className="group rounded-2xl border border-slate-200 bg-white overflow-hidden hover:border-slate-300 hover:shadow-sm transition flex flex-col"
-            >
-            {/* Thumbnail */}
-            <div className="relative">
-              <RecipeCover
-                alt={recipe.title}
-                thumbnail={recipe.thumbnail}
-                videoUrl={recipe.videoUrl}
-                className="group-hover:scale-[1.02] transition-transform duration-300"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-black/15 to-transparent" />
-              <div className="pointer-events-none absolute bottom-3 left-3 right-3">
-                <p className="text-[11px] font-medium text-slate-100/95 mb-1">
-                  {badgeForRecipe(recipe)}
-                </p>
-                <h2 className="text-white text-lg font-semibold drop-shadow">
-                  {recipe.title}
-                </h2>
-              </div>
-            </div>
-
-            {/* Meta */}
-            <div className="flex-1 flex flex-col gap-3 p-4">
-              <p className="text-sm text-slate-600 line-clamp-2">
-                {recipe.shortDescription}
-              </p>
-              <div className="flex flex-wrap gap-2 mt-auto justify-center md:justify-start">
-                {recipe.timeMinutes && (
-                  <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600">
-                    {recipe.timeMinutes} min
-                  </span>
-                )}
-                {recipe.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-            </Link>
+              slug={recipe.slug}
+              title={recipe.title}
+              description={recipe.shortDescription}
+              thumbnail={recipe.thumbnail}
+              tags={recipe.tags}
+              timeMinutes={recipe.timeMinutes}
+              variant="list"
+              badge={badgeForRecipe(recipe)}
+              index={idx}
+              source="recipes-list"
+            />
           </Reveal>
         ))}
       </section>

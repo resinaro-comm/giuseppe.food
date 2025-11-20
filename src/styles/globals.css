@@ -129,6 +129,12 @@ body {
   .font-accent {
     font-family: "Italianno", "Apple Chancery", "Segoe Script", cursive;
   }
+
+  /* Full-surface clickable utility for cards */
+  .click-surface { position: relative; }
+  .click-surface::after { content: ""; position: absolute; inset: 0; }
+  /* Focus ring helper */
+  .focus-ring { @apply focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50; }
 }
 
 /* Mobile comfort spacing for floating AI widget */
