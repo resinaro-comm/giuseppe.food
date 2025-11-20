@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { recipes } from "../data/recipes";
-import { Reveal } from "@components/Reveal";
 
 export default function HomePage() {
   // Choose explicit hero and featured items
@@ -61,7 +60,7 @@ export default function HomePage() {
 
       {/* HERO */}
       <section className="relative grid gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-center">
-        <Reveal className="space-y-6 text-center md:text-left">
+        <div className="space-y-6 text-center md:text-left">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
             giuseppe.food
           </p>
@@ -106,11 +105,11 @@ export default function HomePage() {
             </Link>
             .
           </p>
-        </Reveal>
+        </div>
 
         {/* Hero recipe / social card */}
         {heroRecipe && (
-          <Reveal>
+          <div>
             <Link
               href={`/recipes/${heroRecipe.slug}`}
               className="group relative rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-sm overflow-hidden flex flex-col w-full max-w-xs mx-auto lg:ml-auto lg:mr-0"
@@ -120,8 +119,10 @@ export default function HomePage() {
                   src={heroRecipe.thumbnail as string}
                   alt={heroRecipe.title}
                   fill
+                  priority
+                  loading="eager"
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  className="object-cover"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                 <div className="pointer-events-none absolute bottom-4 left-4 right-4 space-y-1">
@@ -160,21 +161,20 @@ export default function HomePage() {
                 </div>
               </div>
             </Link>
-          </Reveal>
+          </div>
         )}
       </section>
 
       {/* HOW IT WORKS */}
       <section className="relative">
-        <Reveal className="mb-6">
+        <div className="mb-6">
           <h2 className="text-xl md:text-2xl font-semibold text-center md:text-left">
             How it works
           </h2>
-        </Reveal>
+        </div>
         <div className="grid gap-6 md:grid-cols-3 max-w-xl mx-auto md:max-w-none">
-          <Reveal
+          <div
             className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left"
-            delay={50}
           >
             <p className="text-xs font-semibold text-slate-500">STEP 1</p>
             <h3 className="font-medium">Find the dish</h3>
@@ -182,10 +182,9 @@ export default function HomePage() {
               See something you like in a short? Search or tap through to the
               full written recipe here.
             </p>
-          </Reveal>
-          <Reveal
+          </div>
+          <div
             className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left"
-            delay={120}
           >
             <p className="text-xs font-semibold text-slate-500">STEP 2</p>
             <h3 className="font-medium">Cook it properly</h3>
@@ -193,10 +192,9 @@ export default function HomePage() {
               Exact ingredients, steps and timing — no more pausing the video
               20 times to catch what happened.
             </p>
-          </Reveal>
-          <Reveal
+          </div>
+          <div
             className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur p-4 space-y-2 text-center md:text-left"
-            delay={180}
           >
             <p className="text-xs font-semibold text-slate-500">STEP 3</p>
             <h3 className="font-medium">Ask the AI to adapt</h3>
@@ -204,14 +202,14 @@ export default function HomePage() {
               Forgot something, don&apos;t like an ingredient, or cooking for
               more people? The AI tweaks my recipes around you.
             </p>
-          </Reveal>
+          </div>
         </div>
         <div className="mt-10 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
       </section>
 
       {/* LATEST / FEATURED RECIPES */}
       <section className="relative space-y-6">
-        <Reveal className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <h2 className="text-xl md:text-2xl font-semibold">
             Latest from the kitchen
           </h2>
@@ -221,10 +219,10 @@ export default function HomePage() {
           >
             View all recipes
           </Link>
-        </Reveal>
+        </div>
         <div className="grid gap-6 md:grid-cols-3">
           {featured.map((recipe) => (
-            <Reveal key={recipe.slug}>
+            <div key={recipe.slug}>
               <Link
                 href={`/recipes/${recipe.slug}`}
                 className="group rounded-2xl border border-slate-200 bg-white/90 backdrop-blur overflow-hidden hover:border-slate-300 hover:shadow-sm transition flex flex-col"
@@ -234,8 +232,10 @@ export default function HomePage() {
                     src={recipe.thumbnail as string}
                     alt={recipe.title}
                     fill
+                    priority
+                    loading="eager"
                     sizes="(min-width: 1024px) 20vw, 50vw"
-                    className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    className="object-cover"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
                   <div className="pointer-events-none absolute bottom-3 left-3 right-3">
@@ -268,14 +268,14 @@ export default function HomePage() {
                   </div>
                 </div>
               </Link>
-            </Reveal>
+            </div>
           ))}
         </div>
       </section>
 
       {/* GEAR CTA */}
       <section className="relative">
-        <Reveal className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur px-6 py-7 md:px-8 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <div className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur px-6 py-7 md:px-8 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div className="space-y-2 max-w-xl mx-auto md:mx-0">
             <h2 className="text-lg md:text-xl font-semibold">
               Kitchen gear I actually use
@@ -297,12 +297,12 @@ export default function HomePage() {
           >
             See the gear list
           </Link>
-        </Reveal>
+        </div>
       </section>
 
       {/* AI CALLOUT */}
       <section className="relative">
-        <Reveal className="rounded-3xl border border-slate-200 bg-slate-900 text-slate-50 px-6 py-8 md:px-10 md:py-10 flex flex-col md:flex-row items-center md:items-center justify-center md:justify-between gap-6 text-center md:text-left">
+        <div className="rounded-3xl border border-slate-200 bg-slate-900 text-slate-50 px-6 py-8 md:px-10 md:py-10 flex flex-col md:flex-row items-center md:items-center justify-center md:justify-between gap-6 text-center md:text-left">
           <div className="space-y-3 max-w-xl mx-auto md:mx-0">
             <h2 className="text-xl md:text-2xl font-semibold">
               Your AI kitchen helper
@@ -324,7 +324,7 @@ export default function HomePage() {
           >
             Open AI Kitchen
           </button>
-        </Reveal>
+        </div>
       </section>
     </div>
   );

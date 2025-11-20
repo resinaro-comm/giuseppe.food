@@ -3,7 +3,6 @@ import Link from "next/link";
 import type { Route } from "next";
 import { recipes } from "../../data/recipes";
 import RecipeCover from "@components/RecipeCover";
-import { Reveal } from "@components/Reveal";
 import { RecipeCard } from "@components/RecipeCard";
 
 function badgeForRecipe(recipe: { title: string; tags: string[]; timeMinutes?: number }) {
@@ -23,19 +22,19 @@ function badgeForRecipe(recipe: { title: string; tags: string[]; timeMinutes?: n
 export default function RecipesPage() {
   return (
     <div className="space-y-8">
-      <Reveal className="space-y-3">
+      <div className="space-y-3">
         <h1 className="text-2xl md:text-3xl font-semibold">Recipes</h1>
         <p className="text-sm md:text-base text-slate-600 max-w-2xl">
           full recipes below, good luck.
         </p>
-      </Reveal>
+      </div>
 
       {/* Later we can add filters / search here */}
       {/* <div className="flex gap-3 text-sm text-slate-600">...</div> */}
 
       <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe, idx) => (
-          <Reveal key={recipe.slug} delay={idx * 50}>
+          <div key={recipe.slug}>
             <RecipeCard
               href={`/recipes/${recipe.slug}` as Route}
               slug={recipe.slug}
@@ -49,7 +48,7 @@ export default function RecipesPage() {
               index={idx}
               source="recipes-list"
             />
-          </Reveal>
+          </div>
         ))}
       </section>
     </div>

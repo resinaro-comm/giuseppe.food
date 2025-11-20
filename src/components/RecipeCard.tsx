@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import type { Route } from "next";
 import type { UrlObject } from "url";
 
@@ -33,8 +33,6 @@ export function RecipeCard({
   index,
   source = "unknown"
 }: RecipeCardProps) {
-  const [loaded, setLoaded] = useState(false);
-
   const onClick = useCallback(() => {
     try {
       window.dispatchEvent(
@@ -67,14 +65,10 @@ export function RecipeCard({
             alt={title}
             fill
             sizes="(min-width: 1024px) 25vw, 100vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-            onLoad={() => setLoaded(true)}
-            priority={variant === "hero"}
+            className="object-cover"
+            priority
+            loading="eager"
           />
-        )}
-        {/* Skeleton overlay until image loaded */}
-        {!loaded && (
-          <div className="absolute inset-0 animate-pulse bg-gradient-to-b from-slate-200 to-slate-300" aria-hidden />
         )}
         {/* Gradient + text overlay (non-interactive) */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent" aria-hidden />

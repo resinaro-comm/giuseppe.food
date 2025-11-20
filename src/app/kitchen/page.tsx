@@ -2,7 +2,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Reveal } from "@components/Reveal";
 
 const AFFILIATE_TAG = "resinaroamzn-21";
 
@@ -179,7 +178,7 @@ export default function KitchenPage() {
       <div className="space-y-12 md:space-y-16">
         {/* HERO */}
         <section className="relative">
-          <Reveal className="space-y-6 text-center lg:text-left max-w-3xl mx-auto lg:mx-0">
+          <div className="space-y-6 text-center lg:text-left max-w-3xl mx-auto lg:mx-0">
             <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">
               kitchen
             </p>
@@ -220,13 +219,13 @@ export default function KitchenPage() {
               through them, it might send a tiny bit back to support the
               recipes. Price is the same for you.
             </p>
-          </Reveal>
+          </div>
         </section>
 
         {/* GRID OF SECTIONS */}
         <section className="relative space-y-10">
           {gearSections.map((section) => (
-            <Reveal
+            <div
               key={section.id}
               className="space-y-4 rounded-3xl border border-slate-200 bg-white/90 backdrop-blur px-4 py-5 md:px-6 md:py-6"
             >
@@ -252,13 +251,13 @@ export default function KitchenPage() {
                   <GearCard key={item.title} item={item} />
                 ))}
               </div>
-            </Reveal>
+            </div>
           ))}
         </section>
 
         {/* SMALL FOOTER NOTE */}
         <section>
-          <Reveal>
+          <div>
             <div className="border-t border-slate-200 pt-5 text-[11px] text-slate-500 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 text-center lg:text-left">
               <p>
                 If you&apos;re not sure what to buy, start with a solid pan, a
@@ -272,7 +271,7 @@ export default function KitchenPage() {
                 See the chicken cutlets recipe
               </Link>
             </div>
-          </Reveal>
+          </div>
         </section>
       </div>
     </>
