@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { recipes } from "../../../data/recipes";
-import { Reveal } from "@components/Reveal";
 
 const RECIPE_SLUG = "pappardelle-bolognese";
 
@@ -106,7 +105,7 @@ export default function PappardelleBolognesePage() {
       <div className="space-y-10 md:space-y-16">
         {/* HERO */}
         <section>
-          <Reveal className="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start">
+          <div>
             {/* Left */}
             <div className="space-y-5 text-center md:text-left">
               <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">
@@ -190,12 +189,12 @@ export default function PappardelleBolognesePage() {
                 </div>
               </div>
             </div>
-          </Reveal>
+          </div>
         </section>
 
         {/* INGREDIENTS + STEPS */}
         <section>
-          <Reveal className="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)] items-start">
+          <div>
             {/* Ingredients */}
             <div className="space-y-4">
               <h2 className="text-lg md:text-xl font-semibold">Ingredients</h2>
@@ -232,12 +231,12 @@ export default function PappardelleBolognesePage() {
                 seeing in the pan.
               </p>
             </div>
-          </Reveal>
+          </div>
         </section>
 
         {/* GEAR / AFFILIATES */}
         <section>
-          <Reveal className="space-y-4">
+          <div>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
               <h2 className="text-lg md:text-xl font-semibold">
                 Gear that helps (optional)
@@ -271,12 +270,12 @@ export default function PappardelleBolognesePage() {
               might send a tiny bit back to support the recipes. Price is the
               same for you.
             </p>
-          </Reveal>
+          </div>
         </section>
 
         {/* FAQ / TIPS */}
         <section>
-          <Reveal className="space-y-4">
+          <div>
             <h2 className="text-lg md:text-xl font-semibold">
               Quick questions
             </h2>
@@ -301,12 +300,12 @@ export default function PappardelleBolognesePage() {
                 </p>
               </div>
             </div>
-          </Reveal>
+          </div>
         </section>
 
         {/* Back link */}
         <section>
-          <Reveal>
+          <div>
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-6">
               <p className="text-xs text-slate-500">
                 Looking for more pasta ideas? Check the rest of the pasta
@@ -319,7 +318,7 @@ export default function PappardelleBolognesePage() {
                 Back to all recipes
               </Link>
             </div>
-          </Reveal>
+          </div>
         </section>
       </div>
     </>
