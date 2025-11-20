@@ -5,6 +5,7 @@ import Link from "next/link";
 // Only show secondary links; brand acts as Home link.
 const navItems = [
   { href: "/recipes", label: "Recipes" },
+  { href: "/kitchen", label: "Kitchen" },
 ] as const;
 
 export function NavBar() {

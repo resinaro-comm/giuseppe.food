@@ -6,32 +6,20 @@ import Link from "next/link";
 export function Footer() {
   const year = new Date().getFullYear();
 
-  const openAIWidget = useCallback((e?: React.MouseEvent) => {
-    // Prevent any default behavior and event bubbling
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
+  const openAIWidget = useCallback(() => {
     if (typeof window === "undefined") return;
 
-    // Add mobile optimization
-    const openWidget = () => {
-      const anyWindow = window as any;
-      if (typeof anyWindow.__aiWidgetOpen === "function") {
-        anyWindow.__aiWidgetOpen();
-        return;
-      }
+    const anyWindow = window as any;
+    if (typeof anyWindow.__aiWidgetOpen === "function") {
+      anyWindow.__aiWidgetOpen();
+      return;
+    }
 
-      window.dispatchEvent(
-        new CustomEvent("ai-widget:open", {
-          detail: {},
-        })
-      );
-    };
-
-    // Use requestAnimationFrame for smooth mobile experience
-    requestAnimationFrame(openWidget);
+    window.dispatchEvent(
+      new CustomEvent("ai-widget:open", {
+        detail: {},
+      })
+    );
   }, []);
 
   return (
@@ -59,8 +47,8 @@ export function Footer() {
             <span className="text-slate-400">·</span>
             <button
               type="button"
-              onClick={(e) => openAIWidget(e)}
-              className="min-h-[44px] px-1 py-1 hover:text-slate-900 active:text-slate-700 touch-manipulation"
+              onClick={openAIWidget}
+              className="hover:text-slate-900"
             >
               AI Kitchen
             </button>
