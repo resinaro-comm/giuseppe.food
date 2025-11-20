@@ -36,7 +36,7 @@ export default function RecipesPage() {
         {recipes.map((recipe, idx) => (
           <Reveal key={recipe.slug} delay={idx * 50}>
             <RecipeCard
-              href={`/recipes/${recipe.slug}`}
+              href={{ pathname: "/recipes/[slug]", query: { slug: recipe.slug } }}
               slug={recipe.slug}
               title={recipe.title}
               description={recipe.shortDescription}

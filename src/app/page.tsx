@@ -3,7 +3,6 @@
 import { useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { RecipeCard } from "@components/RecipeCard";
 import { recipes } from "../data/recipes";
 import { Reveal } from "@components/Reveal";
 
@@ -90,20 +89,55 @@ export default function HomePage() {
         {/* Hero recipe / social card */}
         {heroRecipe && (
           <Reveal>
-            <div className="w-full max-w-xs mx-auto lg:ml-auto lg:mr-0">
-              <RecipeCard
-                href={`/recipes/${heroRecipe.slug}`}
-                slug={heroRecipe.slug}
-                title={heroRecipe.title}
-                description={heroRecipe.shortDescription}
-                thumbnail={heroRecipe.thumbnail as string}
-                tags={heroRecipe.tags}
-                timeMinutes={heroRecipe.timeMinutes}
-                variant="hero"
-                badge="recent video"
-                source="homepage-hero"
-              />
-            </div>
+            <Link
+              href={`/recipes/${heroRecipe.slug}`}
+              className="group relative rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-sm overflow-hidden flex flex-col w-full max-w-xs mx-auto lg:ml-auto lg:mr-0"
+            >
+              <div className="relative w-full aspect-square bg-slate-100 overflow-hidden">
+                <Image
+                  src={heroRecipe.thumbnail as string}
+                  alt={heroRecipe.title}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="pointer-events-none absolute bottom-4 left-4 right-4 space-y-1">
+                  <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-200">
+                    recent video
+                  </p>
+                  <h2 className="text-lg md:text-xl font-semibold text-white drop-shadow">
+                    {heroRecipe.title}
+                  </h2>
+                  <p className="text-[11px] text-slate-100 line-clamp-2">
+                    {heroRecipe.shortDescription}
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 md:p-5 space-y-3 border-t border-slate-100">
+                <div className="flex flex-wrap gap-2 text-[11px] text-slate-600 justify-center md:justify-start">
+                  {heroRecipe.timeMinutes && (
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 font-medium">
+                      {heroRecipe.timeMinutes} min
+                    </span>
+                  )}
+                  {heroRecipe.tags.slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 font-medium"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span>
+                    tap to see full recipe and the instructions for this.
+                  </span>
+                </div>
+              </div>
+            </Link>
           </Reveal>
         )}
       </section>
@@ -167,21 +201,51 @@ export default function HomePage() {
           </Link>
         </Reveal>
         <div className="grid gap-6 md:grid-cols-3">
-          {featured.map((recipe, idx) => (
+          {featured.map((recipe) => (
             <Reveal key={recipe.slug}>
-              <RecipeCard
+              <Link
                 href={`/recipes/${recipe.slug}`}
-                slug={recipe.slug}
-                title={recipe.title}
-                description={recipe.shortDescription}
-                thumbnail={recipe.thumbnail as string}
-                tags={recipe.tags}
-                timeMinutes={recipe.timeMinutes}
-                variant="featured"
-                badge="VIDEO RECIPE"
-                index={idx}
-                source="homepage-featured"
-              />
+                className="group rounded-2xl border border-slate-200 bg-white/90 backdrop-blur overflow-hidden hover:border-slate-300 hover:shadow-sm transition flex flex-col"
+              >
+                <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden">
+                  <Image
+                    src={recipe.thumbnail as string}
+                    alt={recipe.title}
+                    fill
+                    sizes="(min-width: 1024px) 20vw, 50vw"
+                    className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                  <div className="pointer-events-none absolute bottom-3 left-3 right-3">
+                    <p className="text-[9px] font-medium uppercase tracking-[0.16em] text-slate-200 mb-1">
+                      VIDEO RECIPE
+                    </p>
+                    <h3 className="text-xs md:text-sm font-semibold text-white line-clamp-2 drop-shadow">
+                      {recipe.title}
+                    </h3>
+                  </div>
+                </div>
+                <div className="flex-1 flex flex-col gap-2 p-3">
+                  <p className="text-[13px] text-slate-600 line-clamp-2">
+                    {recipe.shortDescription}
+                  </p>
+                  <div className="mt-auto flex flex-wrap gap-2 text-[10px] justify-center md:justify-start">
+                    {recipe.timeMinutes && (
+                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-600">
+                        {recipe.timeMinutes} min
+                      </span>
+                    )}
+                    {recipe.tags.slice(0, 2).map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-600"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
             </Reveal>
           ))}
         </div>

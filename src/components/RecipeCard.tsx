@@ -3,9 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useCallback } from "react";
+import type { Route } from "next";
+import type { UrlObject } from "url";
 
 type RecipeCardProps = {
-  href: string;
+  href: Route | UrlObject;
   slug: string;
   title: string;
   description?: string;
