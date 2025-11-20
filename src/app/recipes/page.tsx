@@ -1,5 +1,6 @@
 // src/app/recipes/page.tsx
 import Link from "next/link";
+import type { Route } from "next";
 import { recipes } from "../../data/recipes";
 import RecipeCover from "@components/RecipeCover";
 import { Reveal } from "@components/Reveal";
@@ -36,7 +37,7 @@ export default function RecipesPage() {
         {recipes.map((recipe, idx) => (
           <Reveal key={recipe.slug} delay={idx * 50}>
             <RecipeCard
-              href={{ pathname: "/recipes/[slug]", query: { slug: recipe.slug } }}
+              href={`/recipes/${recipe.slug}` as Route}
               slug={recipe.slug}
               title={recipe.title}
               description={recipe.shortDescription}

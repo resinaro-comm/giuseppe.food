@@ -13,22 +13,34 @@ export default function HomePage() {
   const featuredSlugs = ["matcha-cookies", "beef-braciole", "chicken-strips"];
   const featured = recipes.filter((r) => featuredSlugs.includes(r.slug));
 
-  const openAIWidget = useCallback(() => {
-    if (typeof window === "undefined") return;
-
-    // Prefer the imperative opener if it exists
-    const anyWindow = window as any;
-    if (typeof anyWindow.__aiWidgetOpen === "function") {
-      anyWindow.__aiWidgetOpen();
-      return;
+  const openAIWidget = useCallback((e?: React.MouseEvent) => {
+    // Prevent any default behavior and event bubbling
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
 
-    // Fallback: dispatch the custom event the widget listens for
-    window.dispatchEvent(
-      new CustomEvent("ai-widget:open", {
-        detail: {},
-      })
-    );
+    if (typeof window === "undefined") return;
+
+    // Add small delay for mobile to ensure touch event completes
+    const openWidget = () => {
+      // Prefer the imperative opener if it exists
+      const anyWindow = window as any;
+      if (typeof anyWindow.__aiWidgetOpen === "function") {
+        anyWindow.__aiWidgetOpen();
+        return;
+      }
+
+      // Fallback: dispatch the custom event the widget listens for
+      window.dispatchEvent(
+        new CustomEvent("ai-widget:open", {
+          detail: {},
+        })
+      );
+    };
+
+    // Use requestAnimationFrame for smooth mobile experience
+    requestAnimationFrame(openWidget);
   }, []);
 
   return (
@@ -69,20 +81,30 @@ export default function HomePage() {
           <div className="flex flex-wrap gap-3 justify-center md:justify-start">
             <Link
               href="/recipes"
-              className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium bg-slate-900 text-white hover:bg-slate-800 transition"
+              className="inline-flex items-center justify-center rounded-full px-6 py-3 min-h-[44px] text-sm font-medium bg-slate-900 text-white hover:bg-slate-800 active:bg-slate-700 transition touch-manipulation"
             >
               Browse recipes
             </Link>
             <button
               type="button"
-              onClick={openAIWidget}
-              className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium border border-slate-300 text-slate-800 hover:bg-slate-100 transition"
+              onClick={(e) => openAIWidget(e)}
+              className="inline-flex items-center justify-center rounded-full px-6 py-3 min-h-[44px] text-sm font-medium border border-slate-300 text-slate-800 hover:bg-slate-100 active:bg-slate-200 transition touch-manipulation"
             >
               ask AI
             </button>
           </div>
           <p className="text-xs text-slate-500">
-            Recipes are added from my latest videos when they get uploaded.
+            Recipes are added from my latest videos when they get uploaded.{" "}
+            <Link
+              href="/kitchen"
+              className="inline-flex items-center font-medium underline underline-offset-2 text-slate-700 hover:text-slate-900"
+            >
+              See the kitchen gear I actually use
+              <span aria-hidden className="ml-1 text-[11px]">
+                ↗
+              </span>
+            </Link>
+            .
           </p>
         </Reveal>
 
@@ -249,6 +271,33 @@ export default function HomePage() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* GEAR CTA */}
+      <section className="relative">
+        <Reveal className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur px-6 py-7 md:px-8 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+          <div className="space-y-2 max-w-xl mx-auto md:mx-0">
+            <h2 className="text-lg md:text-xl font-semibold">
+              Kitchen gear I actually use
+            </h2>
+            <p className="text-sm text-slate-600">
+              You don&apos;t need fancy kit. But if you want to see the pans,
+              trays and little upgrades I reach for most days, I&apos;ve put
+              them all on one page.
+            </p>
+            <p className="text-[11px] text-slate-400">
+              Some links there are Amazon affiliate links. If you buy through
+              them, it might send a tiny bit back to support the recipes. Price
+              stays the same for you.
+            </p>
+          </div>
+          <Link
+            href="/kitchen"
+            className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium bg-slate-900 text-white hover:bg-slate-800 transition"
+          >
+            See the gear list
+          </Link>
+        </Reveal>
       </section>
 
       {/* AI CALLOUT */}
